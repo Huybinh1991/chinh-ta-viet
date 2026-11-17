@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chính Tả Việt</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; color: #1f2933; background: #f6f8fb; }
+    header { background: #1e5bb8; color: #fff; padding: 12px 14px; }
+    header h1 { margin: 0; font-size: 16px; font-weight: 600; }
+    header p { margin: 2px 0 0; font-size: 12px; opacity: .85; }
+    main { padding: 12px; }
+    .row { display: flex; margin: 0 -4px; }
+    .row > * { flex: 1; margin: 0 4px; }
+    button { font-family: inherit; font-size: 13px; cursor: pointer; border-radius: 4px; border: 1px solid #c5cdd8; background: #fff; color: #1f2933; padding: 6px 10px; }
+    button:hover { background: #eef3fb; }
+    button:disabled { opacity: .5; cursor: default; }
+    .primary { background: #1e5bb8; border-color: #1e5bb8; color: #fff; font-weight: 600; padding: 9px 8px; }
+    .primary:hover { background: #174a98; }
+    .ai { background: #0f7c86; border-color: #0f7c86; }
+    .ai:hover { background: #0b636b; }
+    .link { border: none; background: none; color: #1e5bb8; padding: 4px 2px; text-decoration: underline; }
+    .link:hover { background: none; }
+    .hint { color: #5b6573; font-size: 12px; margin: 8px 0 0; }
+    #status { margin: 10px 0; padding: 8px 10px; border-radius: 4px; background: #e8eef7; display: none; }
+    #status.ok { background: #e3f4e8; color: #1d6b35; }
+    #status.err { background: #fde8e8; color: #9b1c1c; }
+    .toolbar { display: none; margin: 4px 0 8px; }
+    .card { background: #fff; border: 1px solid #dde3ea; border-left: 4px solid #f2c200; border-radius: 4px; padding: 8px 10px; margin-bottom: 8px; }
+    .card.phrase { border-left-color: #e8833a; }
+    .card.ai { border-left-color: #12a4b3; }
+    .card-head { margin-bottom: 3px; }
+    .wrong { font-weight: 600; color: #b42318; font-size: 14px; }
+    .count { color: #5b6573; margin-left: 6px; font-size: 12px; }
+    .tag { float: right; font-size: 11px; color: #5b6573; background: #eef1f5; border-radius: 10px; padding: 1px 7px; }
+    .reason { color: #3e4752; font-size: 12px; margin-bottom: 6px; }
+    .chip { background: #e3f4e8; border-color: #9fd3ae; color: #1d6b35; font-weight: 600; margin: 0 4px 4px 0; padding: 3px 9px; }
+    .chip:hover { background: #cdebd6; }
+    .actions button { font-size: 12px; padding: 3px 8px; margin: 2px 4px 0 0; }
+    .muted { color: #8792a2; font-size: 12px; }
+    #settings { display: none; background: #fff; border: 1px solid #dde3ea; border-radius: 4px; padding: 10px; margin-top: 10px; }
+    #settings label { display: block; font-weight: 600; margin: 8px 0 3px; }
+    #settings input[type=password], #settings input[type=text], #settings select { width: 100%; padding: 6px; border: 1px solid #c5cdd8; border-radius: 4px; font-family: inherit; font-size: 13px; }
+    #settings .check { font-weight: normal; }
+    #demo { display: none; margin-bottom: 10px; }
+    #demo textarea { width: 100%; height: 150px; padding: 8px; border: 1px solid #c5cdd8; border-radius: 4px; font-family: inherit; font-size: 13px; }
+    .banner { background: #fff7e0; border: 1px solid #f2d57a; border-radius: 4px; padding: 8px 10px; margin-bottom: 8px; font-size: 12px; }
+    footer { padding: 4px 12px 14px; }
+    .fmt { background: #8a5a00; border-color: #8a5a00; }
+    .fmt:hover { background: #6e4800; }
+    .card.format { border-left-color: #8a5a00; }
+    .grid2 { display: flex; margin: 0 -4px; }
+    .grid2 > div { flex: 1; margin: 0 4px; }
+    #settings input[type=number] { width: 100%; padding: 5px; border: 1px solid #c5cdd8; border-radius: 4px; }
+    .legal-btn { width: 100%; margin-top: 8px; background: #6b3fa0; border-color: #6b3fa0; }
+    .legal-btn:hover { background: #56328a; }
+    .section { font-weight: 600; color: #6b3fa0; margin: 14px 0 6px; border-bottom: 1px solid #ddd2ea; padding-bottom: 3px; }
+    .card.legal, .card.legalai { border-left-color: #9aa5b1; }
+    .card.st-bad { border-left-color: #d92d20; }
+    .card.st-old { border-left-color: #e8833a; }
+    .card.st-warn { border-left-color: #f2c200; }
+    .card.st-unk { border-left-color: #9aa5b1; }
+    .card.st-info { border-left-color: #2e90fa; }
+    .card.st-ok { border-left-color: #32a852; }
+    .badge { font-size: 12px; font-weight: 600; border-radius: 3px; padding: 1px 6px; }
+    .badge.st-bad { background: #fde8e8; color: #b42318; }
+    .badge.st-old { background: #fdeee2; color: #a8500f; }
+    .badge.st-warn { background: #fff4cc; color: #8a6d00; }
+    .badge.st-unk { background: #eef1f5; color: #4a5562; }
+    .badge.st-info { background: #e3efff; color: #1e5bb8; }
+    .badge.st-ok { background: #e3f4e8; color: #1d6b35; }
+    .cite { font-weight: 600; margin: 4px 0 3px; }
+    .sources { font-size: 12px; color: #5b6573; margin: 2px 0 4px; word-break: break-all; }
+    .sources a { color: #1e5bb8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✓ Chính Tả Việt</h1>
+    <p>Kiểm tra và sửa lỗi chính tả tiếng Việt</p>
+  </header>
+
+  <main>
+    <div id="demo">
+      <div class="banner">Đây là <b>chế độ thử</b> (đang mở ngoài Word). Nếu bạn thấy trang này thì phần đưa add-in lên mạng đã thành công. Hãy dán văn bản vào ô dưới để thử (nút "Ghi chú vào văn bản" chỉ có khi chạy trong Word).</div>
+      <div id="manifestBox" class="banner" style="display:none; background:#e8f1fd; border-color:#a9c7f0">
+        <b>Bước cài đặt:</b> tải file khai báo add-in đã điền sẵn địa chỉ của bạn.<br>
+        <button id="btnManifest" class="primary" style="margin:6px 0 4px">⬇ Tải file manifest.xml</button>
+        <div class="muted" id="manifestNote"></div>
+      </div>
+      <textarea id="demoText">BỘ CÔNG AN
+CỤC CẢNH SÁT HÌNH SỰ
+số 5/QĐ-c02
+Cộng hòa xã hội chủ nghĩa Việt Nam
+Độc lập – Tự do – Hạnh phúc
+Hà Nội ngày 5 tháng 3 năm 2026
+QUYẾT ĐỊNH
+Về việc thành lập Tổ công tác
+CỤC TRƯỞNG CỤC CẢNH SÁT HÌNH SỰ
+Căn cứ Luật Công an nhân dân số 37/2018/QH14
+Theo đề nghị của Trưởng phòng Tham mưu;
+QUYẾT ĐỊNH:
+Điều 1. Thành lập Tổ công tác.
+Nơi nhận:
+- Như Điều 1;
+- Lưu: VT, PV01.
+
+Hôm nay chúng tôi xin chia sẽ kinh nghiệm sử lý hồ sơ khởi kiện. Đây là kết quả xuất xắc của cả nhóm trong năm qua. Văn phòng làm viêc từ thứ hai đến thứ sáu. Người dân nên chọn nghành nghề phù hợp. Vieejt Nam có nhiều cảnh đẹp. Mời bạn gé văn phòng để cí kết hợp đồng.
+
+Căn cứ Bộ luật Dân sự số 92/2015/QH13;
+Căn cứ Luật Đất đai năm 2013;
+Căn cứ Bộ luật Lao động số 45/2019/QH13;
+Theo khoản 2 Điều 468 Bộ luật Dân sự 2016, lãi suất thỏa thuận không vượt quá 20%/năm.</textarea>
+    </div>
+
+    <div class="row">
+      <button id="btnQuick" class="primary" title="Dùng luật chính tả tiếng Việt, miễn phí, không cần mạng">Kiểm tra nhanh</button>
+      <button id="btnAI" class="primary ai" title="Dùng AI Claude, bắt cả lỗi dùng từ theo ngữ cảnh">Kiểm tra bằng AI</button>
+    </div>
+    <button id="btnLegal" class="primary legal-btn" title="Kiểm tra số hiệu, hiệu lực và nội dung các điều luật được viện dẫn">⚖ Rà soát căn cứ pháp lý</button>
+    <div class="row" style="margin-top:8px">
+      <button id="btnFmtCheck" class="primary fmt" title="Kiểm tra Quốc hiệu, số ký hiệu, ngày tháng, căn cứ, nơi nhận, phông chữ, lề trang">📄 Kiểm tra thể thức</button>
+      <button id="btnFmtApply" class="primary fmt" title="Tự áp phông, cỡ chữ, đậm/nghiêng, căn lề, thụt dòng, giãn dòng, lề trang">✨ Tự chỉnh thể thức</button>
+    </div>
+    <p class="hint">Bôi đen một đoạn để chỉ kiểm tra đoạn đó. Không bôi đen thì kiểm tra cả văn bản.</p>
+
+    <div id="status"></div>
+
+    <div id="toolbar" class="toolbar row">
+      <button id="btnFixAll">Sửa tất cả lỗi chắc chắn</button>
+      <button id="btnClear">Xóa tô màu</button>
+    </div>
+
+    <div id="issues"></div>
+
+    <div id="settings">
+      <b>Cài đặt</b>
+      <label for="apiKey">API key của Claude (cho nút "Kiểm tra bằng AI")</label>
+      <input id="apiKey" type="password" placeholder="sk-ant-..." autocomplete="off">
+      <label for="model">Mô hình AI</label>
+      <select id="model">
+        <option value="claude-haiku-5-5">Claude Haiku — nhanh, rẻ</option>
+        <option value="claude-sonnet-5-5">Claude Sonnet — kỹ hơn, đắt hơn</option>
+      </select>
+      <label for="legalModel">Mô hình cho rà soát căn cứ pháp lý</label>
+      <select id="legalModel">
+        <option value="claude-sonnet-5-5">Claude Sonnet — khuyên dùng</option>
+        <option value="claude-opus-5-5">Claude Opus — kỹ nhất, đắt nhất</option>
+        <option value="claude-haiku-5-5">Claude Haiku — rẻ, kém chính xác hơn</option>
+      </select>
+      <hr>
+      <b>Thể thức văn bản</b>
+      <p class="muted">Mặc định theo Phụ lục I Nghị định 30/2020/NĐ-CP. Đổi nếu đơn vị bạn có hướng dẫn riêng.</p>
+      <div class="grid2">
+        <div><label for="fBody">Cỡ chữ nội dung</label><select id="fBody"><option value="14">14</option><option value="13">13</option></select></div>
+        <div><label for="fLine">Giãn dòng</label><select id="fLine"><option value="1">1,0</option><option value="1.15">1,15</option><option value="1.3">1,3</option><option value="1.5">1,5</option></select></div>
+      </div>
+      <label for="fIndent">Thụt đầu dòng</label>
+      <select id="fIndent"><option value="1.27">1,27 cm</option><option value="1">1 cm</option></select>
+      <label>Lề trang (mm)</label>
+      <div class="grid2">
+        <div><span class="muted">Trên</span><input id="fTop" type="number" min="20" max="25"></div>
+        <div><span class="muted">Dưới</span><input id="fBottom" type="number" min="20" max="25"></div>
+        <div><span class="muted">Trái</span><input id="fLeft" type="number" min="30" max="35"></div>
+        <div><span class="muted">Phải</span><input id="fRight" type="number" min="15" max="20"></div>
+      </div>
+      <label class="check"><input id="fPage" type="checkbox" checked> Đánh số trang ở giữa lề trên</label>
+      <hr>
+      <label class="check"><input id="skipForeign" type="checkbox" checked> Bỏ qua từ không dấu không giống tiếng Việt (thường là tiếng Anh)</label>
+      <p class="muted" id="dictInfo"></p>
+      <div class="row">
+        <button id="btnSave" class="primary">Lưu cài đặt</button>
+        <button id="btnClearDict">Xóa từ điển riêng</button>
+      </div>
+      <p class="muted">API key chỉ được lưu trên máy này, gửi thẳng tới Anthropic, không qua máy chủ nào khác.</p>
+    </div>
+  </main>
+
+  <footer>
+    <button id="btnSettings" class="link">⚙ Cài đặt</button>
+  </footer>
+
+  <script src="vn-checker.js"></script>
+  <script src="legal-checker.js"></script>
+  <script src="format-checker.js"></script>
+  <script src="manifest-tool.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
