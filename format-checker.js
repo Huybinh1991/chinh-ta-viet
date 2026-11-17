@@ -209,7 +209,8 @@
   // ------------------------------------------------------------------
   // Kiểm tra lỗi trình bày có thể phát hiện qua chữ
   // ------------------------------------------------------------------
-  function check(paras, roles) {
+  function check(paras, roles, opts) {
+    opts = opts || {};
     roles = roles || classify(paras);
     var issues = [], i;
     function add(status, idx, display, reason, suggestions) {
@@ -280,7 +281,7 @@
         if (mv && mv[0].replace(/\s+$/, "") !== "V/v") add("sai", i, mv[0].replace(/\s+$/, ""), "Trích yếu công văn bắt đầu bằng \"V/v\" (viết đúng chữ hoa/thường, không có dấu hai chấm).", ["V/v"]);
       }
 
-      if (r === "cancu") {
+      if (r === "cancu" && opts.lawNoNumber) {  // tắt mặc định: nhiều đơn vị vẫn ghi số hiệu Luật trong căn cứ
         var ml = /^(căn cứ\s+(?:bộ luật|luật|pháp lệnh)\s[^;]*?)(\s+số\s*:?\s*\d+\/\d{4}\/[A-ZĐ0-9-]+)/i.exec(line);
         if (ml) add("luu_y", i, ml[2].replace(/^\s+/, ""), "Căn cứ là Luật, Pháp lệnh thì chỉ ghi tên và ngày thông qua, không ghi số, ký hiệu (Phụ lục I Nghị định 30/2020/NĐ-CP).");
       }
